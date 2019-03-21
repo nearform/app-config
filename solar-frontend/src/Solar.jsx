@@ -24,7 +24,7 @@ class CityForm extends React.Component {
   async solar() {
     let uri = `http://localhost:3001/solar/${this.state.lat}/${this.state.lng}/${this.state.isUSA ? 'us' : 'intl'}`
     console.log(uri)
-    fetch(uri)
+    fetch (uri)
       .then(res => res.json())
       .then(
         (result) => {
@@ -82,22 +82,22 @@ class CityForm extends React.Component {
     event.preventDefault()
   }
 
-  handleClear(event) {
+  handleClear (event) {
     this.clear()
     event.preventDefault()
   }
 
-  render() {
+  render () {
     return (
       <div>
-        {this.state.lat && this.state.lng ? (
+        {(this.state.lat && this.state.lng) &&
           <Form onSubmit={this.handleSubmit}>
             <FormGroup row>
-              <Button color='primary' type='submit'>Fetch expected Solar output</Button>
+              <Button color='primary' type='submit'>Fetch expected Solar output for 1Kwp</Button>
             </FormGroup>
           </Form>
-        ) : ''}
-        {this.state.monthly[0] ? (
+        }
+        {this.state.monthly[0] !== 0 &&
           <Table size='sm'>
             <thead>
               <tr>
@@ -107,14 +107,14 @@ class CityForm extends React.Component {
             </thead>
             <tbody>
               {this.state.monthly.map((month, index) => (
-                <tr>
+                <tr key={'month' + index}>
                   <td>{monthsArray[index]}</td>
                   <td>{this.state.monthly[index]} kW</td>
                 </tr>
               ))}
             </tbody>
           </Table>
-        ) : '' }
+        }
       </div>
     )
   }

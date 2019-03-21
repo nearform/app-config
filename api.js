@@ -85,7 +85,7 @@ fastify.get('/solar/:lat/:lon', async (req, reply) => {
   }
 })
 
-fastify.listen(process.env.SOLAR_SVC_PORT || 3001, '0.0.0.0', err => {
+fastify.listen(3001, '0.0.0.0', err => {
   if (err) throw err
   console.log(`server listening on ${fastify.server.address().port}`)
 })

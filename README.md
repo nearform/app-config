@@ -7,23 +7,12 @@ This demo application serves to illustrate secure application configuration on K
 
 ## local development
 
-first install all dependencies for the backend. From the repo root run:
+first install all dependencies for the backend and the frontend. From the repo root run:
 ```
-npm install
+npm install-all
 ```
-...and for the frontend:
+Start the frontend, backend development servers and the postgres database:
 ```
-cd solar-frontend
-npm install
+npm start-all
 ```
-
-Start the database
-```
-cd infrastructure/docker
-docker-compose up -d
-```
-Start the development server
-```
-cd ../solar-frontend
-npm start
-```
+All the logs will be visible in the same shell.

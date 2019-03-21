@@ -1,5 +1,6 @@
 import React from 'react'
 import { Form, FormGroup, Button, Table } from 'reactstrap'
+const monthsArray = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 
 class CityForm extends React.Component {
   constructor(props) {
@@ -21,7 +22,7 @@ class CityForm extends React.Component {
   }
 
   async solar() {
-    let uri = `http://localhost:3001/solar/${this.state.lat}/${this.state.lng}/${this.state.isUSA?'us':'intl'}`
+    let uri = `http://localhost:3001/solar/${this.state.lat}/${this.state.lng}/${this.state.isUSA ? 'us' : 'intl'}`
     console.log(uri)
     fetch(uri)
       .then(res => res.json())
@@ -57,9 +58,7 @@ class CityForm extends React.Component {
 
   componentWillReceiveProps({ lat, lng, isUSA }) {
     this.setState({ ...this.state, lat, lng, isUSA })
-    if (!lat && !lng) {
-      this.clear()
-    }
+    this.clear()
   }
 
   clear() {
@@ -81,14 +80,16 @@ class CityForm extends React.Component {
   }
 
   render() {
-    if (this.state.lat && this.state.lng) {
-      return (
-        <div>
+    return (
+      <div>
+        {this.state.lat && this.state.lng ? (
           <Form onSubmit={this.handleSubmit}>
             <FormGroup row>
               <Button color='primary' type='submit'>Fetch expected Solar output</Button>
             </FormGroup>
           </Form>
+        ) : ''}
+        {this.state.monthly[0] ? (
           <Table size='sm'>
             <thead>
               <tr>
@@ -97,63 +98,17 @@ class CityForm extends React.Component {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>January</td>
-                <td>{this.state.monthly[0]} kW</td>
-              </tr>
-              <tr>
-                <td>February</td>
-                <td>{this.state.monthly[1]} kW</td>
-              </tr>
-              <tr>
-                <td>March</td>
-                <td>{this.state.monthly[2]} kW</td>
-              </tr>
-              <tr>
-                <td>April</td>
-                <td>{this.state.monthly[3]} kW</td>
-              </tr>
-              <tr>
-                <td>May</td>
-                <td>{this.state.monthly[4]} kW</td>
-              </tr>
-              <tr>
-                <td>June</td>
-                <td>{this.state.monthly[5]} kW</td>
-              </tr>
-              <tr>
-                <td>July</td>
-                <td>{this.state.monthly[6]} kW</td>
-              </tr>
-              <tr>
-                <td>August</td>
-                <td>{this.state.monthly[7]} kW</td>
-              </tr>
-              <tr>
-                <td>September</td>
-                <td>{this.state.monthly[8]} kW</td>
-              </tr>
-              <tr>
-                <td>October</td>
-                <td>{this.state.monthly[9]} kW</td>
-              </tr>
-              <tr>
-                <td>November</td>
-                <td>{this.state.monthly[10]} kW</td>
-              </tr>
-              <tr>
-                <td>December</td>
-                <td>{this.state.monthly[11]} kW</td>
-              </tr>
+              {this.state.monthly.map((month, index) => (
+                <tr>
+                  <td>{monthsArray[index]}</td>
+                  <td>{this.state.monthly[index]} kW</td>
+                </tr>
+              ))}
             </tbody>
           </Table>
-        </div>
-      )
-    } else {
-      return (
-        <div />
-      )
-    }
+        ) : '' }
+      </div>
+    )
   }
 }
 

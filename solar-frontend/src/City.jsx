@@ -1,7 +1,7 @@
 import React from 'react'
 import Geonames from 'geonames.js'
 import Solar from './Solar.jsx'
-import { Row, Col, Form, FormGroup, Button, ButtonGroup, Table } from 'reactstrap'
+import { Alert, Row, Col, Form, FormGroup, Button, ButtonGroup, Table } from 'reactstrap'
 
 const geonames = new Geonames({ username: 'jopie', lan: 'en', encoding: 'JSON' })
 
@@ -13,7 +13,8 @@ class CityForm extends React.Component {
       lat: '',
       lng: '',
       isUSA: false,
-      city: ''
+      city: '',
+      error: null
     }
 
     this.handleChange = this.handleChange.bind(this)
@@ -22,33 +23,41 @@ class CityForm extends React.Component {
     this.latlng = this.latlng.bind(this)
   }
 
-  async latlng(city) {
+  async latlng (city) {
     console.log(`getting lat/lng for ${city}`)
     try {
       let resp = await geonames.search({ q: city })
-      let data = resp.geonames[0]
-      console.log(data)
-      this.setState({
-        city: data.name,
-        lat: data.lat,
-        lng: data.lng,
-        isUSA: data.countryCode === 'US' || false
-      })
+      if (resp.totalResultsCount > 0) {
+        let data = resp.geonames[0]
+        console.log(data)
+        this.setState({
+          city: data.name,
+          lat: data.lat,
+          lng: data.lng,
+          isUSA: data.countryCode === 'US' || false,
+          error: null
+        })
+      } else {
+        this.setState({
+          error: `No coordinates found for ${city}`,
+          city: ''
+        })
+      }
     } catch (err) {
       console.error(err)
     }
   }
 
-  handleChange(event) {
+  handleChange (event) {
     this.setState({ value: event.target.value })
   }
 
-  handleSubmit(event) {
+  handleSubmit (event) {
     this.latlng(this.state.value)
     event.preventDefault()
   }
 
-  handleClear(event) {
+  handleClear (event) {
     this.setState({
       city: '',
       lat: '',
@@ -59,7 +68,7 @@ class CityForm extends React.Component {
   }
 
 
-  render() {
+  render () {
     return (
       <Row>
         <Col>
@@ -76,22 +85,29 @@ class CityForm extends React.Component {
                 </ButtonGroup>
               </FormGroup>
             </Form>
-            <Table size='sm'>
-              <tbody>
-                <tr>
-                  <td>Name</td>
-                  <td>{this.state.city}</td>
-                </tr>
-                <tr>
-                  <td>Latitude</td>
-                  <td>{this.state.lat}</td>
-                </tr>
-                <tr>
-                  <td>Longitude</td>
-                  <td>{this.state.lng}</td>
-                </tr>
-              </tbody>
-            </Table>
+            {this.state.error &&
+              <Alert color='danger'>
+                {this.state.error}
+              </Alert>
+            }
+            {this.state.city &&
+              <Table size='sm'>
+                <tbody>
+                  <tr>
+                    <td>Name</td>
+                    <td>{this.state.city}</td>
+                  </tr>
+                  <tr>
+                    <td>Latitude</td>
+                    <td>{this.state.lat}</td>
+                  </tr>
+                  <tr>
+                    <td>Longitude</td>
+                    <td>{this.state.lng}</td>
+                  </tr>
+                </tbody>
+              </Table>
+            }
           </div>
         </Col>
         <Col>

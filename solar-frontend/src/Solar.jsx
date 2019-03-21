@@ -1,5 +1,5 @@
 import React from 'react'
-import { Form, FormGroup, Button, Table } from 'reactstrap'
+import { Alert, Form, FormGroup, Button, Table } from 'reactstrap'
 const monthsArray = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 
 class CityForm extends React.Component {
@@ -31,6 +31,7 @@ class CityForm extends React.Component {
           if (result) {
             if (result.error) {
               this.clear()
+              this.setState({ error: result.error })
             } else {
               let monthlyFixed = []
               if (result.monthly_kw) {
@@ -96,6 +97,11 @@ class CityForm extends React.Component {
               <Button color='primary' type='submit'>Fetch expected Solar output for 1Kwp</Button>
             </FormGroup>
           </Form>
+        }
+        {this.state.error &&
+          <Alert color='danger'>
+            {this.state.error}
+          </Alert>
         }
         {this.state.monthly[0] !== 0 &&
           <Table size='sm'>

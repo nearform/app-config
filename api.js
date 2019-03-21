@@ -16,19 +16,19 @@ fastify.register(require('fastify-postgres'), {
 
 fastify.register(require('fastify-cors'), {})
 
-function getSolarData (lat, lon, logger) {
+function getSolarData (lat, lon, usa, logger) {
   return new Promise(function (resolve, reject) {
-    //         https://developer.nrel.gov/api/pvwatts/v5.json?api_key=DEMO_KEY&lat=41.38879&lon=2.15899&system_capacity=4&azimuth=180&tilt=40&array_type=1&module_type=1&losses=10&dataset=intl
-    let url = `https://developer.nrel.gov/api/pvwatts/v5.json?api_key=DEMO_KEY&lat=${lat}&lon=${lon}&system_capacity=1&azimuth=180&tilt=40&array_type=1&module_type=1&losses=10&dataset=intl`
+    let url = `https://developer.nrel.gov/api/pvwatts/v6.json?api_key=DEMO_KEY&lat=${lat}&lon=${lon}&system_capacity=1&azimuth=180&tilt=40&array_type=1&module_type=1&losses=10&dataset=${usa?'nsrdb':'intl'}`
+    console.log(url)
     const opts = {
       url: url,
       method: 'GET',
-      // headers: headers,
       json: true
     }
     return get.concat(opts, (error, response, body) => {
-      logger.info(body.outputs)
+      logger.info(body)
       if (error) reject(error)
+      if (body.errors.length) reject(new Error(body.errors))
       if (body && body.outputs && body.outputs.ac_annual) {
         console.log(body.outputs.ac_monthly)
         resolve({
@@ -42,7 +42,7 @@ function getSolarData (lat, lon, logger) {
   })
 }
 
-fastify.get('/solar/:lat/:lon', async (req, reply) => {
+fastify.get('/solar/:lat/:lon/:region', async (req, reply) => {
   let response = {
     local: false,
     annual_kw: 0,
@@ -57,14 +57,15 @@ fastify.get('/solar/:lat/:lon', async (req, reply) => {
     if (result && result.rows.length) {
       let monthlyKw = []
       let months = result.rows[0].monthly.split(',')
-      for (let i=0; i < months.length; i++ ) {
+      for (let i = 0; i < months.length; i++) {
         monthlyKw.push(parseFloat(months[i]))
       }
       response.local = true
       response.annual_kw = parseFloat(result.rows[0].annual)
       response.monthly_kw = monthlyKw
     } else {
-      let output = await getSolarData(req.params.lat, req.params.lon, req.log)
+      let output = await getSolarData(req.params.lat, req.params.lon, req.params.region === 'us', req.log)
+      console.log(output)
       if (output.annual_ac > 0) {
         await client.query(
           'INSERT INTO solar VALUES($1,$2,$3,$4)', [
@@ -81,7 +82,7 @@ fastify.get('/solar/:lat/:lon', async (req, reply) => {
     reply.send(response)
   } catch (err) {
     console.log(err)
-    reply.send(err.message)
+    reply.send({ error: err.message })
   }
 })
 

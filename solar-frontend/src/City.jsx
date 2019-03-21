@@ -12,6 +12,7 @@ class CityForm extends React.Component {
       value: '',
       lat: '',
       lng: '',
+      isUSA: false,
       city: ''
     }
 
@@ -30,7 +31,8 @@ class CityForm extends React.Component {
       this.setState({
         city: data.name,
         lat: data.lat,
-        lng: data.lng
+        lng: data.lng,
+        isUSA: data.countryCode === 'US' || false
       })
     } catch (err) {
       console.error(err)
@@ -50,7 +52,8 @@ class CityForm extends React.Component {
     this.setState({
       city: '',
       lat: '',
-      lng: ''
+      lng: '',
+      isUSA: false
     })
     event.preventDefault()
   }
@@ -92,7 +95,7 @@ class CityForm extends React.Component {
           </div>
         </Col>
         <Col>
-          <Solar lat={this.state.lat} lng={this.state.lng} />
+          <Solar lat={this.state.lat} lng={this.state.lng} isUSA={this.state.isUSA} />
         </Col>
       </Row>
     )

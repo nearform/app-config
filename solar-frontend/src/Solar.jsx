@@ -1,5 +1,5 @@
 import React from 'react'
-import { Row, Col, Form, FormGroup, Button, ButtonGroup, Table } from 'reactstrap'
+import { Form, FormGroup, Button, Table } from 'reactstrap'
 
 class CityForm extends React.Component {
   constructor(props) {
@@ -9,6 +9,7 @@ class CityForm extends React.Component {
       lng: props.lng,
       annual: 0,
       monthly: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      isUSA: false,
       db: false
     }
     console.log(props)
@@ -20,30 +21,31 @@ class CityForm extends React.Component {
   }
 
   async solar() {
-    let uri = `http://localhost:3001/solar/${this.state.lat}/${this.state.lng}`
+    let uri = `http://localhost:3001/solar/${this.state.lat}/${this.state.lng}/${this.state.isUSA?'us':'intl'}`
     console.log(uri)
     fetch(uri)
       .then(res => res.json())
       .then(
         (result) => {
           if (result) {
-            let monthlyFixed = []
-            if (result.monthly_kw) {
-              for (let i = 0; i < result.monthly_kw.length; i++) {
-                monthlyFixed.push(result.monthly_kw[i].toFixed(2))
-              }
+            if (result.error) {
+              this.clear()
             } else {
-              monthlyFixed = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+              let monthlyFixed = []
+              if (result.monthly_kw) {
+                for (let i = 0; i < result.monthly_kw.length; i++) {
+                  monthlyFixed.push(result.monthly_kw[i].toFixed(2))
+                }
+              } else {
+                monthlyFixed = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+              }
+              this.setState({
+                annual: result.annual_kw ? result.annual_kw.toFixed(2) : 0,
+                monthly: monthlyFixed
+              })
             }
-            this.setState({
-              annual: result.annual_kw ? result.annual_kw.toFixed(2) : 0,
-              monthly: monthlyFixed
-            })
           }
         },
-        // Note: it's important to handle errors here
-        // instead of a catch() block so that we don't swallow
-        // exceptions from actual bugs in components.
         (error) => {
           this.setState({
             isLoaded: true,
@@ -53,9 +55,11 @@ class CityForm extends React.Component {
       )
   }
 
-  componentWillReceiveProps({ lat, lng }) {
-    this.setState({ ...this.state, lat, lng })
-    this.clear()
+  componentWillReceiveProps({ lat, lng, isUSA }) {
+    this.setState({ ...this.state, lat, lng, isUSA })
+    if (!lat && !lng) {
+      this.clear()
+    }
   }
 
   clear() {

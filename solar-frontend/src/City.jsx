@@ -95,7 +95,7 @@ class CityForm extends React.Component {
           </div>
         </Col>
         <Col>
-          <Solar lat={this.state.lat} lng={this.state.lng} isUSA={this.state.isUSA} />
+          <Solar key={this.state.city} lat={this.state.lat} lng={this.state.lng} isUSA={this.state.isUSA} />
         </Col>
       </Row>
     )

@@ -56,12 +56,20 @@ class CityForm extends React.Component {
       )
   }
 
-  componentWillReceiveProps({ lat, lng, isUSA }) {
-    this.setState({ ...this.state, lat, lng, isUSA })
-    this.clear()
+  static getDerivedStateFromProps (props, state) {
+    // Any time the current user changes,
+    // Reset any parts of state that are tied to that user.
+    // In this simple example, that's just the email.
+    if (props.lat !== state.lat || props.lng !== state.lng) {
+      return {
+        lat: props.lat,
+        lng: props.lng
+      }
+    }
+    return null
   }
 
-  clear() {
+  clear () {
     this.setState({
       annual: 0,
       monthly: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -69,7 +77,7 @@ class CityForm extends React.Component {
     })
   }
 
-  handleSubmit(event) {
+  handleSubmit (event) {
     this.solar()
     event.preventDefault()
   }

@@ -67,7 +67,7 @@ class CityForm extends React.Component {
             <Form onSubmit={this.handleSubmit}>
               <FormGroup row>
                 <label>
-                  <h1>Where do you live?</h1>
+                  <h1>In which city is your house?</h1>
                   <input type='text' value={this.state.value} onChange={this.handleChange} />
                 </label>
                 <ButtonGroup>

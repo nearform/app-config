@@ -1,0 +1,430 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "resourceName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the Managed Cluster resource."
+            }
+        },
+        "osDiskSizeGB": {
+            "type": "int",
+            "defaultValue": 0,
+            "metadata": {
+                "description": "Disk size (in GB) to provision for each of the agent pool nodes. This value ranges from 0 to 1023. Specifying 0 will apply the default disk size for that agentVMSize."
+            },
+            "minValue": 0,
+            "maxValue": 1023
+        },
+        "agentCount": {
+            "type": "int",
+            "defaultValue": 3,
+            "metadata": {
+                "description": "The number of nodes for the cluster."
+            },
+            "minValue": 1,
+            "maxValue": 50
+        },
+        "agentVMSize": {
+            "type": "string",
+            "defaultValue": "Standard_D2_v2",
+            "allowedValues": [
+                "Standard_D2_v2",
+                "Standard_D3_v2",
+                "Standard_D4",
+                "Standard_D5_v2"
+            ]
+        },
+        "linuxAdminUsername": {
+            "type": "string",
+            "defaultValue": "azureuser",
+            "metadata": {
+                "description": "User name for the Linux Virtual Machines."
+            }
+        },
+        "sshRSAPublicKey": {
+            "type": "string",
+            "metadata": {
+                "description": "Configure all linux machines with the SSH RSA public key string. Your key should include three parts, for example 'ssh-rsa AAAAB...snip...UcyupgH azureuser@linuxvm'"
+            }
+        },
+        "servicePrincipalClientId": {
+            "metadata": {
+                "description": "Client ID (used by cloudprovider)"
+            },
+            "type": "securestring",
+            "defaultValue": "n/a"
+        },
+        "servicePrincipalObjectId": {
+            "metadata": {
+                "description": "Service Priciple Object ID (used by AKS for Azure Auth)"
+            },
+            "type": "securestring",
+            "defaultValue": "n/a"
+        },
+        "servicePrincipalClientSecret": {
+            "metadata": {
+                "description": "The Service Principal Client Secret."
+            },
+            "type": "securestring",
+            "defaultValue": "n/a"
+        },
+        "keyVaultAdminObjectId": {
+            "metadata": {
+                "description": "The current users' objectId, to assign as Key Vault admin."
+            },
+            "type": "securestring",
+            "defaultValue": "n/a"
+        },
+        "tenantId": {
+            "metadata": {
+                "description": "The current accounts' tenantId, for the Key Vault admin."
+            },
+            "type": "securestring",
+            "defaultValue": "n/a"
+        },
+        "osType": {
+            "type": "string",
+            "defaultValue": "Linux",
+            "allowedValues": [
+                "Linux"
+            ],
+            "metadata": {
+                "description": "The type of operating system."
+            }
+        },
+        "kubernetesVersion": {
+            "type": "string",
+            "defaultValue": "1.9.1",
+            "allowedValues": [
+                "1.8.6",
+                "1.8.7",
+                "1.9.1",
+                "1.9.2"
+            ],
+            "metadata": {
+                "description": "The version of Kubernetes."
+            }
+        },
+        "administratorLogin": {
+            "type": "string"
+        },
+        "administratorLoginPassword": {
+            "type": "securestring"
+        },
+        "location": {
+            "type": "string"
+        },
+        "skuCapacityDTU": {
+            "type": "int"
+        },
+        "skuFamily": {
+            "type": "string"
+        },
+        "skuName": {
+            "type": "string"
+        },
+        "skuSizeMB": {
+            "type": "int"
+        },
+        "skuTier": {
+            "type": "string"
+        },
+        "version": {
+            "type": "string"
+        },
+        "subscriptionId": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "workspaceSku": {
+            "type": "string",
+            "defaultValue": "standard",
+            "allowedValues": [
+                "free",
+                "pernode",
+                "standard"
+            ],
+            "metadata": {
+                "description": "Select the SKU for your workspace"
+            }
+        },
+        "workspace": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "solutionTypes": {
+            "type": "array",
+            "defaultValue": []
+        },
+        "hockeyAppToken": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "hockeyAppId": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "requestSource": {
+            "type": "string",
+            "defaultValue": "IbizaAIExtension"
+        }
+    },
+    "variables": {
+        "resourceName": "[parameters('resourceName')]",
+        "adminUsername": "[parameters('linuxAdminUsername')]",
+        "osDiskSizeGB": "[parameters('osDiskSizeGB')]",
+        "agentCount": "[parameters('agentCount')]",
+        "agentVMSize": "[parameters('agentVMSize')]",
+        "sshRSAPublicKey": "[parameters('sshRSAPublicKey')]",
+        "servicePrincipalClientId": "[parameters('servicePrincipalClientId')]",
+        "servicePrincipalClientSecret": "[parameters('servicePrincipalClientSecret')]",
+        "osType": "[parameters('osType')]",
+        "kubernetesVersion": "[parameters('kubernetesVersion')]"
+    },
+    "resources": [
+        {
+            "apiVersion": "2017-08-31",
+            "type": "Microsoft.ContainerService/managedClusters",
+            "location": "[parameters('location')]",
+            "name": "[concat(deployment().name, '-aks')]",
+            "properties": {
+                "kubernetesVersion": "[variables('kubernetesVersion')]",
+                "dnsPrefix": "[deployment().name]",
+                "agentPoolProfiles": [
+                    {
+                        "name": "agentpool",
+                        "osDiskSizeGB": "[variables('osDiskSizeGB')]",
+                        "count": "[variables('agentCount')]",
+                        "vmSize": "[variables('agentVMSize')]",
+                        "osType": "[variables('osType')]",
+                        "storageProfile": "ManagedDisks"
+                    }
+                ],
+                "linuxProfile": {
+                    "adminUsername": "[variables('adminUsername')]",
+                    "ssh": {
+                        "publicKeys": [
+                            {
+                                "keyData": "[variables('sshRSAPublicKey')]"
+                            }
+                        ]
+                    }
+                },
+                "servicePrincipalProfile": {
+                    "ClientId": "[parameters('servicePrincipalClientId')]",
+                    "Secret": "[parameters('servicePrincipalClientSecret')]"
+                }
+            }
+        }, {
+            "apiVersion": "2015-11-01-preview",
+            "name": "[concat(deployment().name, '-oms')]",
+            "type": "Microsoft.OperationalInsights/workspaces",
+            "location": "[parameters('location')]",
+            "properties": {
+                "sku": {
+                    "name": "[parameters('workspaceSku')]"
+                }
+            },
+            "resources": []
+        }, {
+            "apiVersion": "2015-11-01-preview",
+            "type": "Microsoft.OperationsManagement/solutions",
+            "location": "[parameters('location')]",
+            "name": "[Concat(parameters('solutionTypes')[copyIndex()], '(', deployment().name, '-oms', ')')]",
+            "id": "[Concat('/subscriptions/', parameters('subscriptionId'), '/resourceGroups/', parameters('resourceName'), '/providers/Microsoft.OperationsManagement/solutions/', parameters('solutionTypes')[copyIndex()], '(', deployment().name, '-oms', ')')]",
+            "properties": {
+                "workspaceResourceId": "[Concat('/subscriptions/', parameters('subscriptionId'), '/resourceGroups/', parameters('resourceName'), '/providers/Microsoft.OperationalInsights/workspaces/', deployment().name, '-oms')]"
+            },
+            "dependsOn": [
+                "[concat('Microsoft.OperationalInsights/workspaces/', deployment().name, '-oms')]"
+            ],
+            "plan": {
+                "name": "[Concat(parameters('solutionTypes')[copyIndex()], '(', deployment().name, '-oms', ')')]",
+                "product": "[Concat('OMSGallery/', parameters('solutionTypes')[copyIndex()])]",
+                "promotionCode": "",
+                "publisher": "Microsoft"
+            },
+            "copy": {
+                "name": "solutionsCopy",
+                "count": "[length(parameters('solutionTypes'))]"
+            }
+        },{
+            "name": "[concat(deployment().name, '-insights')]",
+            "type": "microsoft.insights/components",
+            "location": "[variables('location')]",
+            "apiVersion": "2014-08-01",
+            "properties": {
+                "ApplicationId": "[concat(deployment().name, '-insights')]",
+                "Application_Type": "Node.JS",
+                "HockeyAppToken": "[parameters('hockeyAppToken')]",
+                "HockeyAppId": "[parameters('hockeyAppId')]",
+                "Flow_Type": "Redfield",
+                "Request_Source": "IbizaAIExtension"
+            }
+        }, {
+            "apiVersion": "2017-05-10",
+            "name": "linkedTemplate",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "template": {
+                    "$schema": "http://schema.management.azure.com/schemas/2014-04-01-preview/deploymentTemplate.json#",
+                    "contentVersion": "1.0.0.0",
+                    "resources": [
+                        {
+                            "apiVersion": "2017-04-30-preview",
+                            "kind": "",
+                            "location": "[parameters('location')]",
+                            "name": "[concat(deployment().name, '-pg')]",
+                            "properties": {
+                                "version": "[parameters('version')]",
+                                "administratorLogin": "[parameters('administratorLogin')]",
+                                "administratorLoginPassword": "[parameters('administratorLoginPassword')]",
+                                "storageMB": "[parameters('skuSizeMB')]"
+                            },
+                            "sku": {
+                                "name": "[parameters('skuName')]",
+                                "tier": "[parameters('skuTier')]",
+                                "capacity": "[parameters('skuCapacityDTU')]",
+                                "size": "[parameters('skuSizeMB')]",
+                                "family": "[parameters('skuFamily')]"
+                            },
+                            "type": "Microsoft.DBforPostgreSQL/servers"
+                        },
+                        {
+                            "name": "[concat(deployment().name, '-redis')]",
+                            "location": "[parameters('location')]",
+                            "properties": {
+                                "sku": {
+                                    "name": "Basic",
+                                    "family": "C",
+                                    "capacity": 0
+                                },
+                                "redisConfiguration": {},
+                                "enableNonSslPort": false
+                            },
+                            "apiVersion": "2017-10-01",
+                            "type": "Microsoft.Cache/Redis"
+                        }
+
+                    ],
+                    "variables": {}
+                }
+            }
+        },
+        {
+            "type": "Microsoft.ContainerRegistry/registries",
+            "sku": {
+                "name": "Standard",
+                "tier": "Standard"
+            },
+            "name": "[concat(deployment().name, 'registry')]",
+            "apiVersion": "2017-10-01",
+            "location": "[parameters('location')]",
+            "tags": {},
+            "scale": null,
+            "properties": {
+                "adminUserEnabled": true
+            },
+            "dependsOn": []
+        },
+        {
+            "type": "microsoft.insights/components",
+            "kind": "Node.JS",
+            "name": "[concat(deployment().name, '-insights')]",
+            "apiVersion": "2014-04-01",
+            "location": "[parameters('location')]",
+            "tags": {},
+            "scale": null,
+            "properties": {
+                "ApplicationId": "[concat(deployment().name, '-insights')]"
+            },
+            "dependsOn": []
+        },
+        {
+            "type": "Microsoft.KeyVault/vaults",
+            "name": "[concat(deployment().name, '-vault')]",
+            "apiVersion": "2016-10-01",
+            "location": "[parameters('location')]",
+            "tags": {},
+            "scale": null,
+            "properties": {
+                "sku": {
+                    "family": "A",
+                    "name": "Standard"
+                },
+                "tenantId": "[parameters('tenantId')]",
+                "accessPolicies": [
+                    {
+                        "tenantId": "[parameters('tenantId')]",
+                        "objectId": "[parameters('keyVaultAdminObjectId')]",
+                        "permissions": {
+                            "keys": [
+                                "Get",
+                                "List",
+                                "Update",
+                                "Create",
+                                "Import",
+                                "Delete",
+                                "Recover",
+                                "Backup",
+                                "Restore"
+                            ],
+                            "secrets": [
+                                "Get",
+                                "List",
+                                "Set",
+                                "Delete",
+                                "Recover",
+                                "Backup",
+                                "Restore"
+                            ],
+                            "certificates": [
+                                "Get",
+                                "List",
+                                "Update",
+                                "Create",
+                                "Import",
+                                "Delete",
+                                "Recover",
+                                "ManageContacts",
+                                "ManageIssuers",
+                                "GetIssuers",
+                                "ListIssuers",
+                                "SetIssuers",
+                                "DeleteIssuers"
+                            ]
+                        }
+                    },
+                    {
+                        "tenantId": "[parameters('tenantId')]",
+                        "objectId": "[parameters('servicePrincipalObjectId')]",
+                        "permissions": {
+                            "keys": [],
+                            "secrets": [
+                                "Get"
+                            ],
+                            "certificates": []
+                        }
+                    }
+                ],
+                "enabledForDeployment": false,
+                "enabledForDiskEncryption": false,
+                "enabledForTemplateDeployment": false
+            },
+            "dependsOn": []
+        }
+    ],
+    "outputs": {
+        "controlPlaneFQDN": {
+            "type": "string",
+            "value": "[reference(concat('Microsoft.ContainerService/managedClusters/', deployment().name, '-aks')).fqdn]"
+        },
+        "omsCredentials": {
+            "type": "object",
+            "value": "[reference(concat('Microsoft.OperationalInsights/workspaces/', deployment().name, '-oms'))]"
+        }
+    }
+}

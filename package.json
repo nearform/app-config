@@ -1,0 +1,24 @@
+{
+  "name": "nf-images-test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "node api.js",
+    "test": "tap test/*.js"
+  },
+  "author": "Alex Knol <alex.knol@nearform.com>",
+  "license": "MIT",
+  "dependencies": {
+    "fastify": "^2.1.0",
+    "fastify-cli": "^0.16.3",
+    "fastify-cors": "^2.1.2",
+    "fastify-postgres": "^0.3.0",
+    "pg": "github:Vratislav/node-postgres#end-stream-v7",
+    "pino": "^4.15.4",
+    "simple-get": "^2.7.0"
+  },
+  "devDependencies": {
+    "tap": "^11.1.3"
+  }
+}

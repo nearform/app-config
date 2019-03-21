@@ -1,0 +1,6 @@
+
+> nf-images-test@1.0.0 start /Users/elexy/projects/nearform/pathfinders/app-config
+> node api.js
+
+{"level":30,"time":1553180857222,"msg":"Server listening at http://0.0.0.0:3001","pid":59480,"hostname":"mbpro-3055.local","v":1}
+server listening on 3001

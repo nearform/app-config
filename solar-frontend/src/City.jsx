@@ -35,7 +35,10 @@ class CityForm extends React.Component {
       } else {
         this.setState({
           error: `No coordinates found for ${city}`,
-          city: ''
+          city: '',
+          value: '',
+          lat: '',
+          lng: ''
         })
       }
     } catch (err) {

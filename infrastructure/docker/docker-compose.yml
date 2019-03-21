@@ -4,9 +4,13 @@ services:
     build:
       context: .
       dockerfile: postgres.Dockerfile
+    volumes:
+      - data_volume:/var/lib/postgresql
     ports:
       - "5432:5432"
     environment:
         POSTGRES_USER: solar
         POSTGRES_PASSWORD: qwerty
         POSTGRES_DB: solar
+volumes:
+  data_volume: {}

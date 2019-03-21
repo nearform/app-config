@@ -70,9 +70,9 @@ fastify.get('/solar/:lat/:lon/:region', async (req, reply) => {
         await client.query(
           'INSERT INTO solar VALUES($1,$2,$3,$4)', [
             output.annual_ac,
+            output.monthly_ac.join(','),
             req.params.lat,
-            req.params.lon,
-            output.monthly_ac.join(',')
+            req.params.lon
           ]
         )
       }

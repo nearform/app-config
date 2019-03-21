@@ -5,6 +5,12 @@
   "main": "app.js",
   "scripts": {
     "start": "node api.js",
+    "start-backend": "npm start &",
+    "start-db": "docker-compose -f `pwd`/infrastructure/docker/docker-compose.yml up &",
+    "stop-db": "docker-compose -f `pwd`/infrastructure/docker/docker-compose.yml down",
+    "start-frontend": "cd solar-frontend && npm start ",
+    "start-dev": "npm run start-db && npm run start-backend && npm run start-frontend",
+    "install-all": "npm install && cd solar-frontend && npm install",
     "test": "tap test/*.js"
   },
   "author": "Alex Knol <alex.knol@nearform.com>",

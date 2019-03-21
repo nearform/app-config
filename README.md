@@ -16,3 +16,9 @@ Start the frontend, backend development servers and the postgres database:
 npm start-all
 ```
 All the logs will be visible in the same shell.
+
+## deployment to kubernetes
+
+This application contains [helm](https://helm.sh/) chart to manage the deployment to kubernetes
+
+

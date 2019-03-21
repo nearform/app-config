@@ -16,14 +16,9 @@ class CityForm extends React.Component {
       city: '',
       error: null
     }
-
-    this.handleChange = this.handleChange.bind(this)
-    this.handleSubmit = this.handleSubmit.bind(this)
-    this.handleClear = this.handleClear.bind(this)
-    this.latlng = this.latlng.bind(this)
   }
 
-  async latlng (city) {
+ latlng =  async (city) => {
     console.log(`getting lat/lng for ${city}`)
     try {
       let resp = await geonames.search({ q: city })
@@ -48,21 +43,23 @@ class CityForm extends React.Component {
     }
   }
 
-  handleChange (event) {
+  handleChange = (event) => {
     this.setState({ value: event.target.value })
   }
 
-  handleSubmit (event) {
+  handleSubmit = (event) => {
     this.latlng(this.state.value)
     event.preventDefault()
   }
 
-  handleClear (event) {
+  handleClear = (event) => {
     this.setState({
+      value: '',
       city: '',
       lat: '',
       lng: '',
-      isUSA: false
+      isUSA: false,
+      error: null
     })
     event.preventDefault()
   }

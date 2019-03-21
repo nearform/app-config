@@ -3,7 +3,7 @@ import { Alert, Form, FormGroup, Button, Table } from 'reactstrap'
 const monthsArray = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 
 class CityForm extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       lat: props.lat,
@@ -14,14 +14,9 @@ class CityForm extends React.Component {
       db: false
     }
     console.log(props)
-
-    this.clear = this.clear.bind(this)
-    this.handleSubmit = this.handleSubmit.bind(this)
-    this.handleClear = this.handleClear.bind(this)
-    this.solar = this.solar.bind(this)
   }
 
-  async solar() {
+  solar = async () => {
     let uri = `http://localhost:3001/solar/${this.state.lat}/${this.state.lng}/${this.state.isUSA ? 'us' : 'intl'}`
     console.log(uri)
     fetch (uri)
@@ -70,7 +65,7 @@ class CityForm extends React.Component {
     return null
   }
 
-  clear () {
+  clear = () => {
     this.setState({
       annual: 0,
       monthly: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -78,12 +73,12 @@ class CityForm extends React.Component {
     })
   }
 
-  handleSubmit (event) {
+  handleSubmit = (event) => {
     this.solar()
     event.preventDefault()
   }
 
-  handleClear (event) {
+  handleClear = (event) => {
     this.clear()
     event.preventDefault()
   }

@@ -1,0 +1,23 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+spec:
+  replicas: {{ .Values.frontend.replicas }}
+  template:
+    metadata:
+      labels:
+        chart: {{ template "fullname" . }}
+        tier: frontend
+    spec:
+      containers:
+      - name: frontend
+        image: {{ .Values.imgrepo }}{{ .Values.frontendImage }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        command: ['./start.sh']
+        readinessProbe:
+          httpGet:
+            path: /hc
+            port: {{ .Values.frontend.internalPort }}
+        ports:
+        - containerPort: {{ .Values.frontend.internalPort }}

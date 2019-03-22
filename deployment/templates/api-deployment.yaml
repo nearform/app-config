@@ -1,0 +1,30 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}-api
+  labels:
+    heritage: {{.Release.Service | quote }}
+    release: {{.Release.Name | quote }}
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+spec:
+  replicas: {{ .Values.api.replicas }}
+  template:
+    metadata:
+      labels:
+        chart: {{ template "fullname" . }}
+        tier: api
+    spec:
+      containers:
+      - name: api
+        image: "{{ .Values.imgrepo }}{{ .Values.apiImage }}"
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+
+        ports:
+        - containerPort: {{ .Values.api.internalPort}}
+        readinessProbe:
+          httpGet:
+            path: /hc
+            port: {{ .Values.api.internalPort }}
+        env:
+        - name  : NODE_ENV
+          value : production

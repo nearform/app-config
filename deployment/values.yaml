@@ -12,6 +12,13 @@ imagePullPolicy: Always
 api:
   internalPort: 3001
   replicas: 1
+  nrel_api_key: DEMO_KEY
+  db:
+    host: appcfg.postgres.database.azure.com
+    port: 5432
+    user: solar
+    name: solar
+    pass: qwerty
 
 frontend:
   externalPort: 8080

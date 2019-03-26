@@ -1,16 +1,17 @@
 'use strict'
 
+require('dotenv').config()
 const get = require('simple-get')
 const fastify = require('fastify')({
   logger: true
 })
 
 fastify.register(require('fastify-postgres'), {
-  user: 'solar',
-  host: 'localhost',
-  database: 'solar',
-  password: 'qwerty',
-  port: 5432,
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
+  password: process.env.DB_PASS,
+  port: process.env.DB_PORT,
   ssl: false
 })
 
@@ -18,7 +19,7 @@ fastify.register(require('fastify-cors'), {})
 
 function getSolarData (lat, lon, usa, logger) {
   return new Promise(function (resolve, reject) {
-    let url = `https://developer.nrel.gov/api/pvwatts/v6.json?api_key=DEMO_KEY&lat=${lat}&lon=${lon}&system_capacity=1&azimuth=180&tilt=40&array_type=1&module_type=1&losses=10&dataset=${usa?'nsrdb':'intl'}`
+    let url = `https://developer.nrel.gov/api/pvwatts/v6.json?api_key=${process.env.NREL_API_KEY}&lat=${lat}&lon=${lon}&system_capacity=1&azimuth=180&tilt=40&array_type=1&module_type=1&losses=10&dataset=${usa?'nsrdb':'intl'}`
     console.log(url)
     const opts = {
       url: url,

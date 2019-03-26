@@ -24,3 +24,15 @@ spec:
         env:
         - name  : NODE_ENV
           value : production
+        - name  : DB_HOST
+          value : {{ .Values.api.db.host }}
+        - name  : DB_USER
+          value : {{ .Values.api.db.user }}
+        - name  : DB_NAME
+          value : {{ .Values.api.db.name }}
+        - name  : DB_PORT
+          value : {{ .Values.api.db.port }}
+        - name  : DB_PASS
+          value : {{ .Values.api.db.pass }}
+        - name  : NREL_API_KEY
+          value : {{ .Values.api.nrel_api_key }}

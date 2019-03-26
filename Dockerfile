@@ -9,4 +9,4 @@ COPY . .
 
 EXPOSE 3001
 
-CMD [ "npm", "run", "start-api" ]
+CMD [ "npm", "run", "start" ]

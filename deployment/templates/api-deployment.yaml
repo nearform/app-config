@@ -21,10 +21,6 @@ spec:
 
         ports:
         - containerPort: {{ .Values.api.internalPort}}
-        readinessProbe:
-          httpGet:
-            path: /hc
-            port: {{ .Values.api.internalPort }}
         env:
         - name  : NODE_ENV
           value : production

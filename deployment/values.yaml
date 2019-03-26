@@ -1,5 +1,5 @@
 ---
-imgrepo: pathfinders.azurecr.io/
+imgrepo: appcfg.azurecr.io/
 imagePullPolicy: Allways
 deploymentName: development
 service:
@@ -12,11 +12,6 @@ imagePullPolicy: Always
 api:
   internalPort: 3001
   replicas: 1
-  dbhost: pathfinders-pg.postgres.database.azure.com
-  dbssl: "true"
-  dbport: 5432
-  dbuser: solar
-  db: solar
 
 frontend:
   externalPort: 8080
@@ -26,15 +21,10 @@ frontend:
 ingress:
   enabled: true
   hosts:
-  - app-config-dev.nearform.net
+  - solar-demo.nearform.net
   annotations:
-    kubernetes.io/tls-acme: 'false'
-    kubernetes.io/ingress.class: nginx
-    nginx.ingress.kubernetes.io/rewrite-target: /
-  tls:
-  - hosts:
-    - app-config-dev.nearform.net
-    secretName: app-config-tls
+    kubernetes.io/ingress.class: contour
 
-apiImage: api-image:latest
-frontendImage: frontend-image:latest
+
+apiImage: api-image:deploy-1
+frontendImage: frontend-image:deploy-1

@@ -11,13 +11,17 @@ class CityForm extends React.Component {
       annual: 0,
       monthly: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       isUSA: false,
-      db: false
+      db: false,
+      error: null
     }
     console.log(props)
   }
 
   solar = async () => {
-    let uri = `http://localhost:3001/solar/${this.state.lat}/${this.state.lng}/${this.state.isUSA ? 'us' : 'intl'}`
+    let uri = `/solar/${this.state.lat}/${this.state.lng}/${this.state.isUSA ? 'us' : 'intl'}`
+    if (window.location.hostname === 'localhost') {
+      uri = `http://localhost:3001${uri}`
+    }
     console.log(uri)
     fetch (uri)
       .then(res => res.json())
@@ -38,7 +42,8 @@ class CityForm extends React.Component {
               }
               this.setState({
                 annual: result.annual_kw ? result.annual_kw.toFixed(2) : 0,
-                monthly: monthlyFixed
+                monthly: monthlyFixed,
+                error: null
               })
             }
           }

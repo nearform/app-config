@@ -17,7 +17,7 @@ api:
     host: appcfg.postgres.database.azure.com
     port: 5432
     user: solar
-    name: solar
+    name: deploy_2
     pass: qwerty
 
 frontend:
@@ -33,5 +33,5 @@ ingress:
     kubernetes.io/ingress.class: contour
 
 
-apiImage: api-image:deploy-1
-frontendImage: frontend-image:deploy-1
+apiImage: api-image:deploy-2
+frontendImage: frontend-image:deploy-2

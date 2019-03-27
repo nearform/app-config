@@ -21,7 +21,7 @@ frontend:
 ingress:
   enabled: true
   hosts:
-  - solar-demo.nearform.net
+  - solar-deploy-1.nearform.net
   annotations:
     kubernetes.io/ingress.class: contour
 

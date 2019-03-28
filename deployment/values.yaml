@@ -22,7 +22,7 @@ api:
     host: appcfg.postgres.database.azure.com
     port: 5432
     user: solar
-    name: deploy_3
+    name: this_will_be_overridden
     pass_secret: "/kvmnt/dbpass"
 
 frontend:
@@ -36,7 +36,3 @@ ingress:
   - solar-deploy-3.nearform.net
   annotations:
     kubernetes.io/ingress.class: contour
-
-
-apiImage: api-image:deploy-3
-frontendImage: frontend-image:deploy-3

@@ -9,16 +9,21 @@ image: app-config
 imageTag: 27
 imagePullPolicy: Always
 
+tenantid: 8dcc1c85-50c8-41bb-ba73-be0bf36f827f
+subscriptionid: 7d149fba-cc81-4bab-8461-ea09919d78cd
+keyvault: appcfg
+resourcegroup: appcfg
+
 api:
   internalPort: 3001
   replicas: 1
-  nrel_api_key: DEMO_KEY
+  nrel_api_key_secret: "/kvmnt/nrel-key"
   db:
     host: appcfg.postgres.database.azure.com
     port: 5432
     user: solar
-    name: deploy_2
-    pass: qwerty
+    name: deploy_3
+    pass_secret: "/kvmnt/dbpass"
 
 frontend:
   externalPort: 8080
@@ -28,10 +33,10 @@ frontend:
 ingress:
   enabled: true
   hosts:
-  - solar-deploy-2.nearform.net
+  - solar-deploy-3.nearform.net
   annotations:
     kubernetes.io/ingress.class: contour
 
 
-apiImage: api-image:deploy-2
-frontendImage: frontend-image:deploy-2
+apiImage: api-image:deploy-3
+frontendImage: frontend-image:deploy-3

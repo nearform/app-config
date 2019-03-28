@@ -18,7 +18,10 @@ spec:
       - name: api
         image: "{{ .Values.imgrepo }}{{ .Values.apiImage }}"
         imagePullPolicy: {{ .Values.imagePullPolicy }}
-
+        volumeMounts:
+        - name: keyvault
+          mountPath: /kvmnt
+          readOnly: true
         ports:
         - containerPort: {{ .Values.api.internalPort}}
         env:
@@ -32,7 +35,21 @@ spec:
           value : "{{ .Values.api.db.name }}"
         - name  : DB_PORT
           value : "{{ .Values.api.db.port }}"
-        - name  : DB_PASS
-          value : "{{ .Values.api.db.pass }}"
-        - name  : NREL_API_KEY
-          value : "{{ .Values.api.nrel_api_key }}"
+        - name  : DB_PASS_SECRET
+          value : "{{ .Values.api.db.pass_secret }}"
+        - name  : NREL_API_KEY_SECRET
+          value : "{{ .Values.api.nrel_api_key_secret }}"
+      volumes:
+      - name: keyvault
+        flexVolume:
+          driver: "azure/kv"
+          secretRef:
+            name: kvcreds
+          options:
+            usepodidentity: "false"
+            keyvaultname: "{{ .Values.keyvault }}"
+            keyvaultobjectnames: "dbpass;nrel-key"
+            keyvaultobjecttypes: secret;secret
+            resourcegroup: "{{ .Values.resourcegroup }}"
+            subscriptionid: "{{ .Values.subscriptionid }}"
+            tenantid: "{{ .Values.tenantid }}"

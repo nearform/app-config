@@ -22,6 +22,14 @@ spec:
         - name: keyvault
           mountPath: /kvmnt
           readOnly: true
+        readinessProbe:
+          httpGet:
+            path: /hc
+            port: {{ .Values.api.internalPort }}
+        livenessProbe:
+          httpGet:
+            path: /hc
+            port: {{ .Values.api.internalPort }}
         ports:
         - containerPort: {{ .Values.api.internalPort}}
         env:

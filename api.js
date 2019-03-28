@@ -7,8 +7,8 @@ const fastify = require('fastify')({
   logger: true
 })
 
-const dbPass = fs.readFileSync(process.env.DB_PASS_SECRET, 'utf8')
-const nrelApiKey = fs.readFileSync(process.env.NREL_API_KEY_SECRET, 'utf8')
+const dbPass = process.env.DB_PASS_SECRET ? fs.readFileSync(process.env.DB_PASS_SECRET, 'utf8') : 'qwerty'
+const nrelApiKey = process.env.NREL_API_KEY_SECRET ? fs.readFileSync(process.env.NREL_API_KEY_SECRET, 'utf8') : 'DEMO_KEY'
 
 fastify.register(require('fastify-postgres'), {
   user: process.env.DB_USER,
@@ -46,6 +46,15 @@ function getSolarData (lat, lon, usa, logger) {
     })
   })
 }
+
+fastify.get('/hc', async (req, reply) => {
+  // Only report ok if you have done some real checks here
+  if (await fastify.pg.connect()) {
+    reply.send('ok')
+  } else {
+    throw new Error('db not ready')
+  }
+})
 
 fastify.get('/solar/:lat/:lon/:region', async (req, reply) => {
   let response = {

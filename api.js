@@ -79,7 +79,7 @@ fastify.get('/solar/:lat/:lon/:region', async (req, reply) => {
     } else {
       req.log.info(`No cache, ask NREL`)
       let output = await getSolarData(req.params.lat, req.params.lon, req.params.region === 'us', req.log)
-      console.log.info(output)
+      req.log.info(output)
       if (output.annual_ac > 0) {
         await client.query(
           'INSERT INTO solar VALUES($1,$2,$3,$4)', [

@@ -24,6 +24,7 @@ api:
     user: solar
     name: this_will_be_overridden
     pass_secret: "/kvmnt/dbpass"
+    ssl: true
 
 frontend:
   externalPort: 8080

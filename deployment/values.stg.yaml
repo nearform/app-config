@@ -3,5 +3,7 @@ api:
   db:
     name: solar_stg
 ingress:
+  tls: true
+  certName: nearform-solar
   hosts:
   - solar-stg.nearform.net

@@ -37,6 +37,8 @@ spec:
           value : "{{ .Values.api.db.port }}"
         - name  : DB_PASS_SECRET
           value : "{{ .Values.api.db.pass_secret }}"
+        - name  : DB_SSL
+          value : "{{ .Values.api.db.ssl }}"
         - name  : NREL_API_KEY_SECRET
           value : "{{ .Values.api.nrel_api_key_secret }}"
       volumes:

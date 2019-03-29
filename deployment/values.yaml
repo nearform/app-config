@@ -24,6 +24,7 @@ api:
     user: solar
     name: deploy_3
     pass_secret: "/kvmnt/dbpass"
+    ssl: true
 
 frontend:
   externalPort: 8080

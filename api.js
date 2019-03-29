@@ -3,9 +3,18 @@
 require('dotenv').config()
 const get = require('simple-get')
 const fs = require('fs')
+const path = require('path')
 const fastify = require('fastify')({
   logger: true
 })
+let dbSsl = false
+
+if (process.env.DB_SSL) {
+  dbSsl = {
+    ca: fs.readFileSync(path.join(__dirname, '/root.crt')).toString(),
+    rejectUnauthorized: false
+  }
+}
 
 const dbPass = fs.readFileSync(process.env.DB_PASS_SECRET, 'utf8')
 const nrelApiKey = fs.readFileSync(process.env.NREL_API_KEY_SECRET, 'utf8')
@@ -16,7 +25,7 @@ fastify.register(require('fastify-postgres'), {
   database: process.env.DB_NAME,
   password: dbPass,
   port: process.env.DB_PORT,
-  ssl: false
+  ssl: dbSsl
 })
 
 fastify.register(require('fastify-cors'), {})

@@ -63,12 +63,14 @@ fastify.get('/solar/:lat/:lon/:region', async (req, reply) => {
     monthly_kw: 0
   }
   try {
+    req.log.info(`Trying db for ${req.params.lat} - ${req.params.lon}`)
     const client = await fastify.pg.connect()
     const result = await client.query(
       'SELECT annual, monthly FROM solar WHERE lat=$1 AND lon=$2', [req.params.lat, req.params.lon]
     )
     client.release()
     if (result && result.rows.length) {
+      req.log.info(`Found!!`)
       let monthlyKw = []
       let months = result.rows[0].monthly.split(',')
       for (let i = 0; i < months.length; i++) {
@@ -78,8 +80,9 @@ fastify.get('/solar/:lat/:lon/:region', async (req, reply) => {
       response.annual_kw = parseFloat(result.rows[0].annual)
       response.monthly_kw = monthlyKw
     } else {
+      req.log.info(`No cache, ask NREL`)
       let output = await getSolarData(req.params.lat, req.params.lon, req.params.region === 'us', req.log)
-      console.log(output)
+      req.log.info(output)
       if (output.annual_ac > 0) {
         await client.query(
           'INSERT INTO solar VALUES($1,$2,$3,$4)', [
@@ -95,10 +98,11 @@ fastify.get('/solar/:lat/:lon/:region', async (req, reply) => {
     }
     reply.send(response)
   } catch (err) {
-    console.log(err)
+    req.log.error(err)
     reply.send({ error: err.message })
   }
 })
+
 
 fastify.listen(3001, '0.0.0.0', err => {
   if (err) throw err

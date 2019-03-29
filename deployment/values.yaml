@@ -19,6 +19,7 @@ api:
     user: solar
     name: deploy_2
     pass: qwerty
+    ssl: true
 
 frontend:
   externalPort: 8080

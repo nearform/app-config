@@ -34,5 +34,7 @@ spec:
           value : "{{ .Values.api.db.port }}"
         - name  : DB_PASS
           value : "{{ .Values.api.db.pass }}"
+        - name  : DB_SSL
+          value : "{{ .Values.api.db.ssl }}"
         - name  : NREL_API_KEY
           value : "{{ .Values.api.nrel_api_key }}"

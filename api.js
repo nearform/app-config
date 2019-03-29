@@ -16,8 +16,8 @@ if (process.env.DB_SSL) {
   }
 }
 
-const dbPass = fs.readFileSync(process.env.DB_PASS_SECRET, 'utf8')
-const nrelApiKey = fs.readFileSync(process.env.NREL_API_KEY_SECRET, 'utf8')
+const dbPass = process.env.DB_PASS_SECRET ? fs.readFileSync(process.env.DB_PASS_SECRET, 'utf8') : 'qwerty'
+const nrelApiKey = process.env.NREL_API_KEY_SECRET ? fs.readFileSync(process.env.NREL_API_KEY_SECRET, 'utf8') : 'DEMO_KEY'
 
 fastify.register(require('fastify-postgres'), {
   user: process.env.DB_USER,

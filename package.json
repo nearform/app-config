@@ -23,6 +23,7 @@
     "fastify-postgres": "^0.3.0",
     "pg": "github:Vratislav/node-postgres#end-stream-v7",
     "pino": "^4.15.4",
+    "pino-pretty": "^2.5.0",
     "simple-get": "^2.7.0"
   },
   "devDependencies": {

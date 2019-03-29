@@ -5,7 +5,9 @@ const get = require('simple-get')
 const fs = require('fs')
 const path = require('path')
 const fastify = require('fastify')({
-  logger: true
+  logger: {
+    prettyPrint: process.env.NODE_ENV !== 'production'
+  }
 })
 let dbSsl = false
 

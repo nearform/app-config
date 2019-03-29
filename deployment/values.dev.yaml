@@ -2,3 +2,6 @@
 api:
   db:
     name: solar_dev
+ingress:
+  hosts:
+  - solar-dev.nearform.net

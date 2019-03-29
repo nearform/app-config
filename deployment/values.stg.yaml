@@ -1,0 +1,7 @@
+---
+api:
+  db:
+    name: solar_stg
+ingress:
+  hosts:
+  - solar-stg.nearform.net

@@ -4,6 +4,6 @@ api:
     name: solar_dev
 ingress:
   tls: true
-  certName: nearform-solar
+  certName: nearform-solar-tls
   hosts:
   - solar-dev.nearform.net

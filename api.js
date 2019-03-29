@@ -105,6 +105,15 @@ fastify.get('/solar/:lat/:lon/:region', async (req, reply) => {
   }
 })
 
+fastify.get('/hc', async (req, reply) => {
+  // Only report ok if you have done some real checks here
+  if (await fastify.pg.connect()) {
+    reply.send('ok')
+  } else {
+    throw new Error('db not ready')
+  }
+})
+
 
 fastify.listen(3001, '0.0.0.0', err => {
   if (err) throw err

@@ -33,7 +33,7 @@ fastify.register(require('fastify-cors'), {})
 function getSolarData (lat, lon, usa, logger) {
   return new Promise(function (resolve, reject) {
     let url = `https://developer.nrel.gov/api/pvwatts/v6.json?api_key=${nrelApiKey}&lat=${lat}&lon=${lon}&system_capacity=1&azimuth=180&tilt=40&array_type=1&module_type=1&losses=10&dataset=${usa?'nsrdb':'intl'}`
-    console.log(url)
+    logger.info(url)
     const opts = {
       url: url,
       method: 'GET',
@@ -44,7 +44,7 @@ function getSolarData (lat, lon, usa, logger) {
       if (error) reject(error)
       if (body.errors.length) reject(new Error(body.errors))
       if (body && body.outputs && body.outputs.ac_annual) {
-        console.log(body.outputs.ac_monthly)
+        logger.info(body.outputs.ac_monthly)
         resolve({
           annual_ac: body.outputs.ac_annual,
           monthly_ac: body.outputs.ac_monthly

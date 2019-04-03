@@ -9,10 +9,10 @@ This demo application serves to illustrate secure application configuration on K
 
 first install all dependencies for the backend and the frontend. From the repo root run:
 ```
-npm install-all
+npm run install-all
 ```
 Start the frontend, backend development servers and the postgres database:
 ```
-npm start-all
+npm run start-all
 ```
 All the logs will be visible in the same shell.
